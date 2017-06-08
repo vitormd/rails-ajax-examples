@@ -1,0 +1,62 @@
+<section class="container">
+  <header>
+    <h1>Exemplos de Ajax</h1>
+  </header>
+
+  <div class="row">
+    <div class="col-md-4">
+      <form action="/fetch_image" method="get" data-remote="true">
+        <button type="submit" class="btn btn-block btn-primary">Rails-way</button>
+      </form>
+    </div>
+
+    <div class="col-md-4">
+      <button type="button" class="btn btn-block btn-danger js-vanilla-img">Vanilla JavaScript</button>
+    </div>
+
+    <div class="col-md-4">
+      <button type="button" class="btn btn-block btn-success js-jquery-img">JQuery</button>
+    </div>
+  </div>
+
+  <img src="" alt="code image" class="code-image">
+</section>
+
+<% content_for :bottom_javascripts do %>
+  <script>
+    var vanillaJsButton = document.querySelector('.js-vanilla-img');
+    var jqueryJsButton  = document.querySelector('.js-jquery-img');
+
+    function initVanillaAjaxButton() {
+      vanillaJsButton.addEventListener('click', fetchImageVanillaAjax);
+    }
+
+    function initJqueryAjaxButton() {
+      jqueryJsButton.addEventListener('click', fetchImageJqueryAjax);
+    }
+
+    function fetchImageVanillaAjax() {
+      var request = new XMLHttpRequest();
+      request.open('GET', '/fetch_image_vanilla');
+      request.send();
+      request.addEventListener('load', function() {
+        var jsonResponse = JSON.parse(this.responseText);
+        document.querySelector('img.code-image').src = jsonResponse.url;
+      });
+    }
+
+    function fetchImageJqueryAjax() {
+      jQuery.ajax({
+        url: '/fetch_image_ajax',
+        method: 'GET',
+        dataType: 'json',
+        success: function (response) {
+          document.querySelector('img.code-image').src = response.url;
+        }
+      });
+    }
+
+    initJqueryAjaxButton();
+    initVanillaAjaxButton();
+  </script>
+<% end %>
